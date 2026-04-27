@@ -48,6 +48,11 @@ export default function OutputPage() {
     typeof window !== "undefined" ? localStorage.getItem("analyzeData") : null;
   const inputReview = stored ? JSON.parse(stored).review : "";
 
+  const handleNewAnalysis = () => {
+    localStorage.removeItem("analyzeData");
+    router.push("/");
+  };
+
   if (loading) {
     return <LoadingScreen />;
   }
@@ -68,7 +73,7 @@ export default function OutputPage() {
 
         {/* ── Back nav ── */}
         <button
-          onClick={() => router.push("/")}
+          onClick={handleNewAnalysis}
           className="mt-6 px-10 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-black text-sm font-medium transition-all duration-200 cursor-pointer shadow-[0_0_0_1px_rgba(251,191,36,0.2)] hover:shadow-[0_0_0_1px_rgba(251,191,36,0.4)]"
         >
           New Analysis
