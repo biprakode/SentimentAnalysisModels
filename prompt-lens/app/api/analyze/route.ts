@@ -8,34 +8,34 @@ const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 // Custom Encoder
 async function custom_zs() {
-    await delay(3000);
+    await delay(1000);
     return 4;
 }
 
 async function custom_fs() {
-    await delay(3000);
+    await delay(1000);
     return 3;
 }
 
 // HuggingFace Encoder
 async function hf_zs() {
-    await delay(3000);
+    await delay(1000);
     return 4;
 }
 
 async function hf_fs() {
-    await delay(3000);
+    await delay(1000);
     return 3;
 }
 
 // Qwen Small LLM
 async function qwen_zs() {
-    await delay(3000);
+    await delay(1000);
     return 4;
 }
 
 async function qwen_fs() {
-    await delay(3000);
+    await delay(1000);
     return 3;
 }
 
@@ -44,9 +44,9 @@ async function qwen_fs() {
 async function groq_zs(review : string) {
 
     const SYSTEM_PROMPT_ZS = `
-        You are a strict movie review rating system.
+        You are a strict E-commerce product review rating system.
 
-        Your task is to analyze a movie review and assign a rating from 1 to 5.
+        Your task is to analyze a E-commerce product review and assign a rating from 1 to 5.
 
         Rating scale:
         1 = Very Negative
@@ -102,9 +102,9 @@ async function groq_zs(review : string) {
 async function groq_fs(review: string, examples: Example[]): Promise<any> {
 
     const SYSTEM_PROMPT_FS = `
-        You are a strict movie review rating system.
+        You are a strict E-commerce product review rating system.
 
-        Your task is to analyze a movie review and assign a rating from 1 to 5.
+        Your task is to analyze a E-commerce product review and assign a rating from 1 to 5.
 
         Rating scale:
         1 = Very Negative
