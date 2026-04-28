@@ -71,7 +71,7 @@ export default function OutputPage() {
 
       <div className="relative z-10 w-full max-w-2xl mx-auto flex flex-col gap-10">
 
-        {/* ── Back nav ── */}
+        {/* ── New Analysis Button ── */}
         <button
           onClick={handleNewAnalysis}
           className="mt-6 px-10 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-black text-sm font-medium transition-all duration-200 cursor-pointer shadow-[0_0_0_1px_rgba(251,191,36,0.2)] hover:shadow-[0_0_0_1px_rgba(251,191,36,0.4)]"
@@ -146,7 +146,7 @@ export default function OutputPage() {
                 Your Rating
               </p>
               <p className="text-xs text-white/20 font-light">
-                How would you rate this movie?
+                How would you rate this product?
               </p>
             </div>
 

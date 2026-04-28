@@ -22,7 +22,7 @@ export default function ReviewInput({ value, onChange }: ReviewInputProps) {
   return (
     <div className="flex flex-col gap-2">
       <label className="text-[11px] text-white/30 tracking-widest uppercase font-mono">
-        Movie Review
+        Product Review
       </label>
 
       <div className="relative group">
@@ -33,7 +33,7 @@ export default function ReviewInput({ value, onChange }: ReviewInputProps) {
           ref={textareaRef}
           value={value}
           onChange={handleChange}
-          placeholder="Enter your movie review..."
+          placeholder="Enter your product review..."
           rows={6}
           className="w-full bg-white/3 border border-white/10 rounded-xl px-5 py-4 text-white/90 placeholder:text-white/20 text-sm leading-relaxed resize-none focus:outline-none focus:border-amber-500/30 transition-colors duration-200 font-light min-h-40"
         />

@@ -51,10 +51,10 @@ export default function Home() {
             <span className="w-8 h-px bg-amber-400/40" />
           </div>
           <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white/95 leading-tight">
-            🎬 Movie Review Analyzer
+            Amazon Product Review Analyzer
           </h1>
           <p className="text-sm text-white/35 font-light tracking-wide max-w-sm">
-            Analyze sentiment and tone from any movie review using zero-shot or few-shot prompting
+            Analyze sentiment and tone from any product review from amazon using zero-shot or few-shot prompting
           </p>
         </header>
 
