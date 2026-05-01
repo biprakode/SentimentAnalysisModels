@@ -7,25 +7,15 @@ import { Example } from "@/app/page";
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 // Custom Encoder
-async function custom_zs() {
+async function customEncoder() {
     await delay(1000);
     return 4;
-}
-
-async function custom_fs() {
-    await delay(1000);
-    return 3;
 }
 
 // HuggingFace Encoder
-async function hf_zs() {
+async function hfEncoder() {
     await delay(1000);
     return 4;
-}
-
-async function hf_fs() {
-    await delay(1000);
-    return 3;
 }
 
 // Qwen Small LLM
@@ -209,8 +199,8 @@ export async function POST(req: NextRequest) {
     const start = Date.now();
 
     const [custom, hf, qwen, groq] = await Promise.all([
-      isFewShot ? custom_fs() : custom_zs(),
-      isFewShot ? hf_fs() : hf_zs(),
+      customEncoder(),
+      hfEncoder(),
       isFewShot ? qwen_fs() : qwen_zs(),
       isFewShot ? groq_fs(review, examples) : groq_zs(review),
     ]);
