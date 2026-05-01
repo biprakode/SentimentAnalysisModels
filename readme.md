@@ -27,20 +27,31 @@ The system evaluates four different models:
 - Acts as the baseline small language model
 - Provides structured, learned predictions
 
-### 🔹 2. Pretrained Encoder Model (Existing SLM)
-- Sourced from Hugging Face
-- Used for benchmarking against a standard pretrained system
-
-### 🔹 3. Small LLM (Qwen 0.5B)
+### 🔹 2. Small LLM (Qwen 0.5B)
 - Lightweight language model
 - Fine-tuned on movie review data
 - Enhanced using prompt engineering techniques
 
-### 🔹 4. Large LLM (llama-3.3-70b-versatile)
+### 🔹 3. Large LLM (llama-3.3-70b-versatile)
 - Accessed via OpenRouter / Groq
 - No fine-tuning applied
 - Uses carefully designed prompts for prediction
 - Serves as a high-capability reference model
+
+---
+
+## 🔬 Fine-tuning Approach Comparison
+
+| | Custom Encoder (BERT) | Small LLM (Qwen 0.5B) |
+|---|---|---|
+| **Base architecture** | BERT-base (encoder, built from scratch) | Qwen2.5-0.5B (decoder, pretrained) |
+| **Training method** | Full fine-tune | LoRA (PEFT) — adapters only |
+| **Trainable parameters** | ~110M (all) | ~10M (LoRA r=8 + classifier head) |
+| **Checkpoint size** | ~450 MB | ~10–30 MB |
+| **Dataset** | Amazon Reviews 2023 — Books (1.5M samples) | Same |
+| **Dataset cache** | Created and pushed to HF Hub | Reused — no re-download |
+| **HF Hub repo** | `AgentPhoenix7/SLM-project` | `AgentPhoenix7/SLM-project-qwen` |
+| **Kaggle notebook** | `bert-finetune-kaggle.ipynb` | `qwen-finetune-kaggle.ipynb` |
 
 ---
 
@@ -107,7 +118,7 @@ The system evaluates four different models:
   - Development of custom encoder model
   - Training and dataset handling
 
-- **Anish & David**
+- **Anis & David**
   - Fine-tuning of small LLM (Qwen 0.5B)
   - Prompt engineering for small LLM
 
