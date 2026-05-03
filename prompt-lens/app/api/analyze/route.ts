@@ -47,7 +47,7 @@ async function qwen_zs(review: string): Promise<number> {
     const res = await fetch(`${QWEN_API_URL}/predict`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ review, mode: "zero-shot" }),
+        body: JSON.stringify({ review, mode: "zero-shot", optimize: true }),
     });
     if (!res.ok) throw new Error(`Qwen server error: ${res.status}`);
     const { rating } = await res.json();
@@ -58,7 +58,7 @@ async function qwen_fs(review: string, examples: Example[]): Promise<number> {
     const res = await fetch(`${QWEN_API_URL}/predict`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ review, mode: "few-shot", examples: examples.slice(0, 3) }),
+        body: JSON.stringify({ review, mode: "few-shot", examples: examples.slice(0, 3), optimize: true }),
     });
     if (!res.ok) throw new Error(`Qwen server error: ${res.status}`);
     const { rating } = await res.json();

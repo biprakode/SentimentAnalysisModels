@@ -59,6 +59,7 @@ class PredictRequest(BaseModel):
     review: str
     mode: str = "zero-shot"
     examples: Optional[list[Example]] = []
+    optimize: bool = True
 
 
 @app.get("/health")
@@ -74,9 +75,9 @@ async def predict(req: PredictRequest):
     examples = [e.model_dump() for e in (req.examples or [])]
 
     if req.mode == "few-shot" and examples:
-        result = qi.predict_few_shot(req.review, examples)
+        result = qi.predict_few_shot(req.review, examples, optimize=req.optimize)
     else:
-        result = qi.predict_zero_shot(req.review)
+        result = qi.predict_zero_shot(req.review, optimize=req.optimize)
 
     return {"rating": result["rating"]}
 
