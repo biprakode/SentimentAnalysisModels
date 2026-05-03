@@ -1,0 +1,7 @@
+torch
+transformers
+huggingface_hub
+fastapi
+uvicorn
+pydantic
+python-dotenv
