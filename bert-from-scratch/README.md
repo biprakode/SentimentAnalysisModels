@@ -1,6 +1,6 @@
 # BERT from Scratch
 
-A clean PyTorch implementation of BERT (bert-base-uncased) built from first principles, with pretrained weight loading and fine-tuning on Amazon product reviews for 1–5 star rating classification.
+A clean PyTorch implementation of BERT (bert-base-uncased) built from first principles, with pretrained weight loading and fine-tuning on Amazon book reviews for 1–5 star rating classification.
 
 ## Architecture
 
