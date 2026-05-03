@@ -2,7 +2,7 @@
   "name": "promptlens",
   "private": true,
   "scripts": {
-    "setup": "npm install && npm install --prefix prompt-lens && pip install -r qwen/requirements_qwen.txt && pip install -r bert-from-scratch/requirements_bert.txt && hf download AgentPhoenix7/SLM-project checkpoints/best.pt --local-dir .\\bert-from-scratch\\",
+    "setup": "npm install && npm install --prefix prompt-lens && pip install -r qwen/requirements_qwen.txt && pip install -r bert-from-scratch/requirements_bert.txt && python -c \"from huggingface_hub import hf_hub_download; import shutil, os; shutil.copy(hf_hub_download('AgentPhoenix7/SLM-project', 'checkpoints/best.pt'), os.path.join('bert-from-scratch', 'best.pt'))\"",
     "dev": "concurrently -n next,qwen,bert -c cyan,yellow,magenta \"npm run dev --prefix prompt-lens\" \"cd qwen && python qwen_server.py\" \"cd bert-from-scratch && python bert_server.py\""
   },
   "devDependencies": {
