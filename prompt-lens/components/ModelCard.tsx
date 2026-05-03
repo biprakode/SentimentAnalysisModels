@@ -3,7 +3,11 @@
 import StarRating from "./StarRating";
 
 export interface ModelResult {
-  model: "custom" | "hf" | "qwen" | "groq";
+  model:
+    | "custom"
+    // | "hf"
+    | "qwen"
+    | "groq";
   rating: number;
 }
 
@@ -13,14 +17,14 @@ const MODEL_META: Record<
 > = {
   custom: {
     name: "Custom Encoder SLM",
-    description: "Trained on movie review dataset",
+    description: "Trained on Amazon book review dataset",
     tag: "Fine-tuned",
   },
-  hf: {
-    name: "Existing Encoder SLM",
-    description: "Pretrained baseline model",
-    tag: "Baseline",
-  },
+  // hf: {
+  //   name: "Existing Encoder SLM",
+  //   description: "Pretrained baseline model",
+  //   tag: "Baseline",
+  // },
   qwen: {
     name: "Optimized Small LLM",
     description: "Fine-tuned with prompt optimization",
