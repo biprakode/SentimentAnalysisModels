@@ -110,7 +110,6 @@ SentimentAnalysisModels/
 ### Prerequisites
 - Node.js 18+
 - Python 3.10+
-- `hf` CLI configured and authenticated (`huggingface-cli login`)
 - Groq API key
 
 ### Setup
