@@ -122,11 +122,13 @@ def _infer(text: str) -> dict:
 
 # ── public API ────────────────────────────────────────────────────────────────
 
-def predict_zero_shot(review: str) -> dict:
-    return {**_infer(_fmt_optimized(review, [])), "mode": "zero-shot"}
+def predict_zero_shot(review: str, optimize: bool = True) -> dict:
+    text = _fmt_optimized(review, []) if optimize else _fmt_zero_shot(review)
+    return {**_infer(text), "mode": "zero-shot"}
 
 
-def predict_few_shot(review: str, examples: list[dict]) -> dict:
-    return {**_infer(_fmt_optimized(review, examples)), "mode": "few-shot"}
+def predict_few_shot(review: str, examples: list[dict], optimize: bool = True) -> dict:
+    text = _fmt_optimized(review, examples) if optimize else _fmt_few_shot(review, examples)
+    return {**_infer(text), "mode": "few-shot"}
 
 

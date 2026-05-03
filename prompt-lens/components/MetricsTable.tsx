@@ -26,13 +26,13 @@ export default function MetricsTable({ results, userRating }: MetricsTableProps)
         <p className="text-[11px] font-mono tracking-widest uppercase text-white/30">
           Evaluation Metrics
         </p>
-        <div className="h-px flex-1 bg-white/[0.06]" />
+        <div className="h-px flex-1 bg-white/6" />
         <span className="text-[11px] font-mono text-white/20">
           vs. your rating · {userRating}/5
         </span>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-white/8 bg-white/[0.02]">
+      <div className="overflow-hidden rounded-xl border border-white/8 bg-white/2">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-white/8">
@@ -57,8 +57,8 @@ export default function MetricsTable({ results, userRating }: MetricsTableProps)
               return (
                 <tr
                   key={r.model}
-                  className={`border-b border-white/[0.05] last:border-0 transition-colors duration-150 ${
-                    isFirst ? "bg-amber-500/[0.04]" : "hover:bg-white/[0.02]"
+                  className={`border-b border-white/5 last:border-0 transition-colors duration-150 ${
+                    isFirst ? "bg-amber-500/4" : "hover:bg-white/2"
                   }`}
                 >
                   <td className="px-4 py-3">
