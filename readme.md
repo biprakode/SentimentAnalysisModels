@@ -1,120 +1,182 @@
-# 🎬 PromptLens: Comparative Study of SLMs and LLMs for Movie Review Rating
+# PromptLens: Comparative Study of SLMs and LLMs for Amazon Book Review Rating
 
-## 📌 Overview
+## Overview
 
-PromptLens is a comparative AI system designed to analyze movie reviews and predict a rating on a scale of 1 to 5. The project explores the behavior and performance differences between Small Language Models (SLMs) and Large Language Models (LLMs), with a strong focus on **zero-shot and few-shot prompting techniques**.
+PromptLens is a comparative AI system that analyzes Amazon book reviews and predicts a star rating on a scale of 1 to 5. The project explores the behavior and performance differences between Small Language Models (SLMs) and Large Language Models (LLMs), with a focus on **zero-shot and few-shot prompting techniques**.
 
-The system allows users to input a movie review, choose between zero-shot and few-shot modes, and observe how different models interpret the same input. It then compares predictions with user-provided ground truth and evaluates model performance using metrics like accuracy and mean absolute error.
+Users input a book review, choose a prompting mode, and observe how different models interpret the same input. Predictions are then compared against a user-provided ground truth rating and evaluated using accuracy and mean absolute error.
 
 ---
 
-## 🎯 Objectives
+## Objectives
 
-- Implement a Small Language Model (SLM) for classification tasks
-- Experiment with **zero-shot and few-shot prompting**
-- Analyze how prompting strategies influence model outputs
-- Compare SLM outputs with stronger LLM outputs
+- Implement and fine-tune Small Language Models (SLMs) for sentiment classification
+- Experiment with zero-shot and few-shot prompting strategies
+- Analyze how prompting style influences model output
+- Compare SLM outputs against a strong LLM baseline
 - Evaluate model performance using standard metrics
 
 ---
 
-## 🧠 Models Used
+## Models
 
-The system evaluates four different models:
+### 1. Custom Encoder SLM — BERT (Fine-tuned)
+- BERT-base architecture built from scratch and fully fine-tuned
+- Trained on 1.5M Amazon book reviews (`cogsci13/Amazon-Reviews-2023-Books-Review`)
+- Served locally via `bert-from-scratch/bert_server.py` (FastAPI, port 8001)
+- Checkpoint: `AgentPhoenix7/SLM-project` on HuggingFace Hub
 
-### 🔹 1. Custom Encoder Model (SLM)
-- Built and trained on movie review datasets
-- Acts as the baseline small language model
-- Provides structured, learned predictions
+### 2. Optimized Small LLM — Qwen2.5-0.5B (LoRA Fine-tuned)
+- Qwen2.5-0.5B decoder fine-tuned with LoRA (PEFT)
+- Trained on the same Amazon book review dataset
+- Served locally via `qwen/qwen_server.py` (FastAPI, port 8000)
+- Checkpoint: `AgentPhoenix7/SLM-project-qwen` on HuggingFace Hub
 
-### 🔹 2. Pretrained Encoder Model (Existing SLM)
-- Sourced from Hugging Face
-- Used for benchmarking against a standard pretrained system
-
-### 🔹 3. Small LLM (Qwen 0.5B)
-- Lightweight language model
-- Fine-tuned on movie review data
-- Enhanced using prompt engineering techniques
-
-### 🔹 4. Large LLM (llama-3.3-70b-versatile)
-- Accessed via OpenRouter / Groq
-- No fine-tuning applied
-- Uses carefully designed prompts for prediction
-- Serves as a high-capability reference model
+### 3. Standard LLM — Llama 3.3 70B (Groq)
+- `llama-3.3-70b-versatile` accessed via Groq API
+- No fine-tuning — relies entirely on prompt engineering
+- Serves as the high-capability reference baseline
 
 ---
 
-## ⚙️ Prompting Techniques
+## Fine-tuning Comparison
 
-### 🔸 Zero-shot Prompting
-- No examples provided
-- Model relies solely on instruction and internal knowledge
-
-### 🔸 Few-shot Prompting
-- Up to 3 examples are provided
-- Examples influence the model's prediction behavior
-- Demonstrates how contextual guidance affects output
-
-### 🔸 Prompt Optimization
-- Structured prompts for consistent output
-- Controlled formatting (strict 1–5 rating output)
-- Experimental variations to improve reliability
+| | Custom Encoder (BERT) | Small LLM (Qwen 0.5B) |
+|---|---|---|
+| **Base architecture** | BERT-base (encoder, built from scratch) | Qwen2.5-0.5B (decoder, pretrained) |
+| **Training method** | Full fine-tune | LoRA (PEFT) — adapters only |
+| **Trainable parameters** | ~110M (all) | ~10M (LoRA r=8 + classifier head) |
+| **Dataset** | Amazon Reviews 2023 — Books (1.5M samples) | Same |
+| **HF Hub repo** | `AgentPhoenix7/SLM-project` | `AgentPhoenix7/SLM-project-qwen` |
+| **Kaggle notebook** | `bert-finetune-kaggle.ipynb` | `qwen/qwen-finetune-kaggle.ipynb` |
+| **Inference server** | `bert-from-scratch/bert_server.py` (port 8001) | `qwen/qwen_server.py` (port 8000) |
 
 ---
 
-## 🖥️ System Workflow
+## Prompting Techniques
 
-1. User enters a movie review
+### Zero-shot
+- No examples provided to the model
+- Model relies solely on the system instruction and its weights
+
+### Few-shot
+- Up to 3 labeled examples are provided before the target review
+- Demonstrates how in-context examples shift model behavior
+- Applied to all three models; encoder models use examples for UI consistency only
+
+---
+
+## System Workflow
+
+1. User enters an Amazon book review
 2. Selects prompting mode (Zero-shot / Few-shot)
-3. (Optional) Provides few-shot examples
-4. System processes input through all four models
-5. Each model outputs a rating (1–5)
-6. User provides actual rating
-7. System evaluates predictions and displays performance metrics
+3. Optionally provides up to 3 labeled few-shot examples
+4. All three models run in parallel and return a 1–5 rating
+5. User submits their own rating as ground truth
+6. System evaluates predictions and displays accuracy / MAE per model
 
 ---
 
-## 📊 Evaluation Metrics
+## Project Structure
 
-- **Accuracy**
-- **Mean Absolute Error (MAE)**
-- Model agreement comparison
+```
+SentimentAnalysisModels/
+├── prompt-lens/              # Next.js frontend + API routes
+│   ├── app/
+│   │   ├── page.tsx          # Main input page (review + mode toggle)
+│   │   ├── output/page.tsx   # Results page (model cards + metrics)
+│   │   └── api/analyze/route.ts  # Calls all three model servers
+│   └── components/
+├── bert-from-scratch/        # Custom BERT model + inference server
+│   ├── bert-finetune-kaggle.ipynb
+│   ├── bert_inference.py     # Model definition + checkpoint loading
+│   ├── bert_server.py        # FastAPI server (port 8001)
+│   └── requirements_bert.txt
+├── qwen/                     # Qwen2.5-0.5B LoRA model + inference server
+│   ├── qwen-finetune-kaggle.ipynb
+│   ├── qwen_inference.py
+│   ├── qwen_server.py        # FastAPI server (port 8000)
+│   └── requirements_qwen.txt
+├── examples/                 # Sample book review inputs
+│   ├── zero-shot/
+│   └── few-shot/
+└── package.json              # Root scripts: setup + dev
+```
+
+---
+
+## Getting Started
+
+### Prerequisites
+- Node.js 18+
+- Python 3.10+
+- `hf` CLI configured and authenticated (`huggingface-cli login`)
+- Groq API key
+
+### Setup
+
+```bash
+npm run setup
+```
+
+This installs all Node and Python dependencies and downloads `best.pt` for the BERT model from HuggingFace Hub.
+
+### Environment Variables
+
+Copy the example files and fill in your keys:
+
+```bash
+cp prompt-lens/.env.example prompt-lens/.env.local
+cp bert-from-scratch/.env.example bert-from-scratch/.env
+```
+
+**`prompt-lens/.env.local`**
+```
+GROQ_API_KEY=your_groq_api_key
+QWEN_API_URL=http://localhost:8000   # optional
+BERT_API_URL=http://localhost:8001   # optional
+```
+
+**`bert-from-scratch/.env`**
+```
+HF_TOKEN=your_hf_token
+BERT_PORT=8001
+```
+
+### Run
+
+```bash
+npm run dev
+```
+
+Starts three processes concurrently:
+| Process | Color | URL |
+|---|---|---|
+| Next.js frontend | cyan | http://localhost:3000 |
+| Qwen inference server | yellow | http://localhost:8000 |
+| BERT inference server | magenta | http://localhost:8001 |
 
 ---
 
-## 🧩 Tech Stack
+## Evaluation Metrics
 
-- **Frontend:** Next.js, React, Tailwind CSS
-- **Backend:** Node.js API routes / server functions
-- **Model APIs:** OpenRouter, Groq
-- **ML Libraries:** Scikit-learn (for encoder models)
+- **Accuracy** — exact match between predicted and actual rating
+- **Mean Absolute Error (MAE)** — average deviation from user's rating
 
 ---
 
-## 🧪 Features
+## Tech Stack
 
-- Real-time model comparison (2x2 grid view)
-- Toggle between zero-shot and few-shot prompting
-- Dynamic few-shot example input
-- Structured output visualization
-- Performance evaluation dashboard
-
----
-
-## 👥 Team Contributions
-
-- **Biprarshi**
-  - Development of custom encoder model
-  - Training and dataset handling
-
-- **Anish & David**
-  - Fine-tuning of small LLM (Qwen 0.5B)
-  - Prompt engineering for small LLM
-
-- **Arin**
-  - Frontend development
-  - Backend API integration
-  - Prompt engineering for large LLM
-  - System orchestration and evaluation pipeline
+- **Frontend:** Next.js, React, Tailwind CSS v4, TypeScript
+- **API Routes:** Next.js server functions (`@ai-sdk/groq`)
+- **Inference Servers:** FastAPI + Uvicorn (Python)
+- **ML:** PyTorch, HuggingFace Transformers, PEFT
+- **LLM API:** Groq (`llama-3.3-70b-versatile`)
 
 ---
+
+## Team Contributions
+
+- **Biprarshi** — Custom BERT encoder: architecture, training, dataset pipeline
+- **Anis & David** — Qwen 0.5B: LoRA fine-tuning, prompt engineering
+- **Arin** — Frontend, backend API integration, Groq prompt engineering, system orchestration

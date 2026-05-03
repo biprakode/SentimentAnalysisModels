@@ -10,7 +10,7 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   title: "Prompt Lens",
-  description: "Analyze movie review sentiment using zero-shot or few-shot prompting",
+  description: "Analyze Amazon book review sentiment using zero-shot or few-shot prompting",
 };
 
 export default function RootLayout({

@@ -1,0 +1,11 @@
+{
+  "name": "promptlens",
+  "private": true,
+  "scripts": {
+    "setup": "npm install && npm install --prefix prompt-lens && pip install -r qwen/requirements_qwen.txt && pip install -r bert-from-scratch/requirements_bert.txt && hf download AgentPhoenix7/SLM-project checkpoints/best.pt --local-dir .\\bert-from-scratch\\",
+    "dev": "concurrently -n next,qwen,bert -c cyan,yellow,magenta \"npm run dev --prefix prompt-lens\" \"cd qwen && python qwen_server.py\" \"cd bert-from-scratch && python bert_server.py\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+  }
+}

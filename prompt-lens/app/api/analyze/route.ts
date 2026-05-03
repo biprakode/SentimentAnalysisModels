@@ -4,29 +4,65 @@ import { groq } from '@ai-sdk/groq';
 
 import { Example } from "@/app/page";
 
-const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+// Custom Encoder — calls bert_server.py
+const BERT_API_URL = process.env.BERT_API_URL ?? "http://localhost:8001";
 
-// Custom Encoder
-async function customEncoder() {
-    await delay(1000);
-    return 4;
+async function custom_zs(review: string): Promise<number> {
+    const res = await fetch(`${BERT_API_URL}/predict`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ review, mode: "zero-shot" }),
+    });
+    if (!res.ok) throw new Error(`BERT server error: ${res.status}`);
+    const { rating } = await res.json();
+    return rating;
 }
 
-// HuggingFace Encoder
-async function hfEncoder() {
-    await delay(1000);
-    return 4;
+async function custom_fs(review: string, examples: Example[]): Promise<number> {
+    const res = await fetch(`${BERT_API_URL}/predict`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ review, mode: "few-shot", examples: examples.slice(0, 3) }),
+    });
+    if (!res.ok) throw new Error(`BERT server error: ${res.status}`);
+    const { rating } = await res.json();
+    return rating;
 }
 
-// Qwen Small LLM
-async function qwen_zs() {
-    await delay(1000);
-    return 4;
+// HuggingFace Encoder (disabled)
+// async function hf_zs() {
+//     await delay(1000);
+//     return 4;
+// }
+
+// async function hf_fs() {
+//     await delay(1000);
+//     return 3;
+// }
+
+// Qwen Small LLM — calls the local Python inference server (qwen_server.py)
+const QWEN_API_URL = process.env.QWEN_API_URL ?? "http://localhost:8000";
+
+async function qwen_zs(review: string): Promise<number> {
+    const res = await fetch(`${QWEN_API_URL}/predict`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ review, mode: "zero-shot" }),
+    });
+    if (!res.ok) throw new Error(`Qwen server error: ${res.status}`);
+    const { rating } = await res.json();
+    return rating;
 }
 
-async function qwen_fs() {
-    await delay(1000);
-    return 3;
+async function qwen_fs(review: string, examples: Example[]): Promise<number> {
+    const res = await fetch(`${QWEN_API_URL}/predict`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ review, mode: "few-shot", examples: examples.slice(0, 3) }),
+    });
+    if (!res.ok) throw new Error(`Qwen server error: ${res.status}`);
+    const { rating } = await res.json();
+    return rating;
 }
 
 // Groq LLM
@@ -34,9 +70,9 @@ async function qwen_fs() {
 async function groq_zs(review : string) {
 
     const SYSTEM_PROMPT_ZS = `
-        You are a strict E-commerce product review rating system.
+        You are a strict Amazon book review rating system.
 
-        Your task is to analyze a E-commerce product review and assign a rating from 1 to 5.
+        Your task is to analyze an Amazon book review and assign a rating from 1 to 5.
 
         Rating scale:
         1 = Very Negative
@@ -77,24 +113,22 @@ async function groq_zs(review : string) {
         const text = result.text?.trim() || "";
 
         const match = text.match(/[1-5]/);
-        const rating = match ? parseInt(match[0]) : 0;  //zero rating as fallback
-        
-        return rating
+        const rating = match ? parseInt(match[0]) : 3;
+
+        return rating;
 
     } catch (error: any) {
-        return Response.json({
-            success: false,
-            message: "Invalid request. Unable to perform analysis.",
-        }, { status: 400 } );
+        console.error("Groq (zero-shot) error:", error);
+        return 3;
     }
 }
 
 async function groq_fs(review: string, examples: Example[]): Promise<any> {
 
     const SYSTEM_PROMPT_FS = `
-        You are a strict E-commerce product review rating system.
+        You are a strict Amazon book review rating system.
 
-        Your task is to analyze a E-commerce product review and assign a rating from 1 to 5.
+        Your task is to analyze an Amazon book review and assign a rating from 1 to 5.
 
         Rating scale:
         1 = Very Negative
@@ -168,10 +202,8 @@ async function groq_fs(review: string, examples: Example[]): Promise<any> {
         return rating;
 
     } catch (error) {
-        return Response.json({
-            success: false,
-            message: "Invalid request. Unable to perform analysis.",
-        }, { status: 400 } );
+        console.error("Groq (few-shot) error:", error);
+        return 3;
     }
 }
 
@@ -198,16 +230,37 @@ export async function POST(req: NextRequest) {
     // Call all models in parallel
     const start = Date.now();
 
-    const [custom, hf, qwen, groq] = await Promise.all([
-      customEncoder(),
-      hfEncoder(),
-      isFewShot ? qwen_fs() : qwen_zs(),
+    // const [custom, hf, qwen, groq] = await Promise.allSettled([
+    //   isFewShot ? custom_fs(review, examples) : custom_zs(review),
+    //   isFewShot ? hf_fs() : hf_zs(),
+    //   isFewShot ? qwen_fs(review, examples) : qwen_zs(review),
+    //   isFewShot ? groq_fs(review, examples) : groq_zs(review),
+    // ]);
+    const [customResult, qwenResult, groqResult] = await Promise.allSettled([
+      isFewShot ? custom_fs(review, examples) : custom_zs(review),
+      isFewShot ? qwen_fs(review, examples) : qwen_zs(review),
       isFewShot ? groq_fs(review, examples) : groq_zs(review),
     ]);
 
+    const resolve = (r: PromiseSettledResult<number>, name: string) => {
+      if (r.status === "fulfilled") return r.value;
+      console.error(`${name} failed:`, r.reason);
+      return null;
+    };
+
+    const custom = resolve(customResult, "BERT");
+    const qwen   = resolve(qwenResult,   "Qwen");
+    const groq   = resolve(groqResult,   "Groq");
+
     const totalTime = Date.now() - start;
 
-    // Return the response
+    const allResults = [
+      custom !== null ? { model: "custom", rating: custom } : null,
+      // hf !== null ? { model: "hf", rating: hf } : null,
+      qwen   !== null ? { model: "qwen",   rating: qwen }   : null,
+      groq   !== null ? { model: "groq",   rating: groq }   : null,
+    ].filter(Boolean);
+
     return NextResponse.json({
       meta: {
         mode,
@@ -215,12 +268,7 @@ export async function POST(req: NextRequest) {
         examplesCount: examples.length,
         latency: totalTime,
       },
-      results: [
-        { model: "custom", rating: custom },
-        { model: "hf", rating: hf },
-        { model: "qwen", rating: qwen },
-        { model: "groq", rating: groq },
-      ],
+      results: allResults,
     });
   } catch (err) {
     console.error("API Error:", err);

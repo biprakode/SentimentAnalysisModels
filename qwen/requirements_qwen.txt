@@ -1,0 +1,9 @@
+torch
+transformers
+peft
+accelerate
+huggingface_hub
+fastapi
+uvicorn
+pydantic
+python-dotenv

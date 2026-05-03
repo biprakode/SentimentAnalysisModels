@@ -1,0 +1,18 @@
+{
+  "review": "Meticulously researched and surprisingly hard to put down. The author weaves primary sources and personal narrative together seamlessly. I came in knowing little about the subject and left feeling like I'd lived through it. One of the best popular history books I've encountered.",
+  "mode": "few-shot",
+  "examples": [
+    {
+      "review": "Absolute trash. Poorly written, boring plot, total waste of money.",
+      "rating": 1
+    },
+    {
+      "review": "It was fine. Not great, not terrible. A decent read to pass the time.",
+      "rating": 3
+    },
+    {
+      "review": "A masterpiece. Every page pulled me deeper in. One of the best books I've ever read.",
+      "rating": 5
+    }
+  ]
+}

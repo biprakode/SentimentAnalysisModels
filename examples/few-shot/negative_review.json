@@ -1,0 +1,18 @@
+{
+  "review": "I couldn't get past chapter three. The plot is painfully slow, the dialogue feels unnatural, and the main character makes decisions that defy all logic. I've read better fan fiction. Save your money and find something else.",
+  "mode": "few-shot",
+  "examples": [
+    {
+      "review": "Absolute trash. Poorly written, boring plot, total waste of money.",
+      "rating": 1
+    },
+    {
+      "review": "It was fine. Not great, not terrible. A decent read to pass the time.",
+      "rating": 3
+    },
+    {
+      "review": "A masterpiece. Every page pulled me deeper in. One of the best books I've ever read.",
+      "rating": 5
+    }
+  ]
+}

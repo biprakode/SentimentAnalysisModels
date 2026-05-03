@@ -1,0 +1,18 @@
+{
+  "review": "Billed as a gripping thriller but I fell asleep twice trying to finish it. The supposed twist is telegraphed 100 pages early and the protagonist is completely unlikeable for no good reason. The author mistakes bleakness for depth.",
+  "mode": "few-shot",
+  "examples": [
+    {
+      "review": "Absolute trash. Poorly written, boring plot, total waste of money.",
+      "rating": 1
+    },
+    {
+      "review": "It was fine. Not great, not terrible. A decent read to pass the time.",
+      "rating": 3
+    },
+    {
+      "review": "A masterpiece. Every page pulled me deeper in. One of the best books I've ever read.",
+      "rating": 5
+    }
+  ]
+}

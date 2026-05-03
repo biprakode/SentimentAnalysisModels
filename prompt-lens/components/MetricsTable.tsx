@@ -4,7 +4,7 @@ import { ModelResult } from "./ModelCard";
 
 const MODEL_NAMES: Record<ModelResult["model"], string> = {
   custom: "Custom Encoder SLM",
-  hf: "Existing Encoder SLM",
+  // hf: "Existing Encoder SLM",
   qwen: "Optimized Small LLM",
   groq: "Standard LLM Response",
 };

@@ -1,0 +1,18 @@
+{
+  "review": "A sci-fi epic that actually earns its length. The world-building is meticulous without being overwhelming, and the hard science is explained in a way that never loses you. The final act is the most thrilling thing I've read in years. Essential reading for the genre.",
+  "mode": "few-shot",
+  "examples": [
+    {
+      "review": "Absolute trash. Poorly written, boring plot, total waste of money.",
+      "rating": 1
+    },
+    {
+      "review": "It was fine. Not great, not terrible. A decent read to pass the time.",
+      "rating": 3
+    },
+    {
+      "review": "A masterpiece. Every page pulled me deeper in. One of the best books I've ever read.",
+      "rating": 5
+    }
+  ]
+}

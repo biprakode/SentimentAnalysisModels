@@ -51,10 +51,10 @@ export default function Home() {
             <span className="w-8 h-px bg-amber-400/40" />
           </div>
           <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white/95 leading-tight">
-            Amazon Product Review Analyzer
+            Amazon Book Review Analyzer
           </h1>
           <p className="text-sm text-white/35 font-light tracking-wide max-w-sm">
-            Analyze sentiment and tone from any product review from amazon using zero-shot or few-shot prompting
+            Analyze sentiment and tone from any Amazon book review using zero-shot or few-shot prompting
           </p>
         </header>
 
@@ -81,7 +81,7 @@ export default function Home() {
         <AnalyzeButton onClick={handleAnalyze} disabled={!review.trim()} />
 
         <p className="text-center text-[11px] text-white/20 font-mono">
-          No data is stored · Analysis is simulated
+          No data is stored · Results may vary by model
         </p>
       </div>
     </main>
