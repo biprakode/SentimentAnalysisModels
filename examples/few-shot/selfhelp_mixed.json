@@ -1,0 +1,18 @@
+{
+  "review": "The core idea is solid and genuinely useful — I've already applied two of the frameworks from chapter four. But the author pads it out with repetitive anecdotes and the last third is basically filler. Could have been a tight 50-page essay. Good ideas, poor editing.",
+  "mode": "few-shot",
+  "examples": [
+    {
+      "review": "Absolute trash. Poorly written, boring plot, total waste of money.",
+      "rating": 1
+    },
+    {
+      "review": "It was fine. Not great, not terrible. A decent read to pass the time.",
+      "rating": 3
+    },
+    {
+      "review": "A masterpiece. Every page pulled me deeper in. One of the best books I've ever read.",
+      "rating": 5
+    }
+  ]
+}
