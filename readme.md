@@ -128,6 +128,7 @@ Copy the example files and fill in your keys:
 ```bash
 cp prompt-lens/.env.example prompt-lens/.env.local
 cp bert-from-scratch/.env.example bert-from-scratch/.env
+cp qwen/.env.example qwen/.env
 ```
 
 **`prompt-lens/.env.local`**
@@ -141,6 +142,11 @@ BERT_API_URL=http://localhost:8001   # optional
 ```
 HF_TOKEN=your_hf_token
 BERT_PORT=8001
+```
+
+**`qwen/.env`**
+```
+HF_TOKEN=your_hf_token
 ```
 
 ### Run
