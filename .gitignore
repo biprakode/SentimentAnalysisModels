@@ -38,3 +38,6 @@ node_modules/
 *.pt
 *.bin
 *.safetensors
+
+# Session notes
+latest_summary.md
