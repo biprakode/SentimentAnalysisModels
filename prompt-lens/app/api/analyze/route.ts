@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateText } from "ai";
 import { groq } from '@ai-sdk/groq';
+import axios from "axios";
 
 import { Example } from "@/app/page";
 
@@ -8,27 +9,49 @@ import { Example } from "@/app/page";
 const BERT_API_URL = process.env.BERT_API_URL ?? "http://localhost:8001";
 
 async function custom_zs(review: string): Promise<number> {
-    const res = await fetch(`${BERT_API_URL}/predict`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ review, mode: "zero-shot" }),
-    });
-    if (!res.ok) throw new Error(`BERT server error: ${res.status}`);
-    const { rating } = await res.json();
-    return rating;
+    try {
+        const res = await axios.post(
+            `${BERT_API_URL}/predict`,
+            {
+                review,
+                mode: "zero-shot"
+            }
+        );
+
+        const { rating } = res.data;
+        return rating;
+
+    } catch (error: any) {
+        if (error.response) {
+            throw new Error(`BERT server error: ${error.response.status}`);
+        } else {
+            throw new Error("Network error or server not reachable");
+        }
+    }
 }
 
 async function custom_fs(review: string, examples: Example[]): Promise<number> {
-    const res = await fetch(`${BERT_API_URL}/predict`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ review, mode: "few-shot", examples: examples.slice(0, 3) }),
-    });
-    if (!res.ok) throw new Error(`BERT server error: ${res.status}`);
-    const { rating } = await res.json();
-    return rating;
-}
+    try {
+        const res = await axios.post(
+            `${BERT_API_URL}/predict`,
+            {
+                review,
+                mode: "few-shot",
+                examples: examples.slice(0, 3)
+            }
+        );
 
+        const { rating } = res.data;
+        return rating;
+
+    } catch (error: any) {
+        if (error.response) {
+            throw new Error(`BERT server error: ${error.response.status}`);
+        } else {
+            throw new Error("Network error or server not reachable");
+        }
+    }
+}
 // HuggingFace Encoder (disabled)
 // async function hf_zs() {
 //     await delay(1000);
@@ -67,7 +90,7 @@ async function qwen_fs(review: string, examples: Example[]): Promise<number> {
 
 // Groq LLM
 
-async function groq_zs(review : string) {
+async function groq_zs(review : string): Promise<number> {
 
     const SYSTEM_PROMPT_ZS = `
         You are a strict Amazon book review rating system.
@@ -123,7 +146,7 @@ async function groq_zs(review : string) {
     }
 }
 
-async function groq_fs(review: string, examples: Example[]): Promise<any> {
+async function groq_fs(review: string, examples: Example[]): Promise<number> {
 
     const SYSTEM_PROMPT_FS = `
         You are a strict Amazon book review rating system.
