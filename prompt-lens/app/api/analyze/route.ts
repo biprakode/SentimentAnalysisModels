@@ -67,25 +67,48 @@ async function custom_fs(review: string, examples: Example[]): Promise<number> {
 const QWEN_API_URL = process.env.QWEN_API_URL ?? "http://localhost:8000";
 
 async function qwen_zs(review: string): Promise<number> {
-    const res = await fetch(`${QWEN_API_URL}/predict`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ review, mode: "zero-shot", optimize: true }),
-    });
-    if (!res.ok) throw new Error(`Qwen server error: ${res.status}`);
-    const { rating } = await res.json();
-    return rating;
+    try {
+        const res = await axios.post(
+            `${QWEN_API_URL}/predict`,
+            {
+                review,
+                mode: "zero-shot",
+                optimize: true
+            }
+        );
+
+        return res.data.rating;
+
+    } catch (error: any) {
+        if (error.response) {
+            throw new Error(`Qwen server error: ${error.response.status}`);
+        } else {
+            throw new Error("Network error or server not reachable");
+        }
+    }
 }
 
 async function qwen_fs(review: string, examples: Example[]): Promise<number> {
-    const res = await fetch(`${QWEN_API_URL}/predict`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ review, mode: "few-shot", examples: examples.slice(0, 3), optimize: true }),
-    });
-    if (!res.ok) throw new Error(`Qwen server error: ${res.status}`);
-    const { rating } = await res.json();
-    return rating;
+    try {
+        const res = await axios.post(
+            `${QWEN_API_URL}/predict`,
+            {
+                review,
+                mode: "few-shot",
+                examples: examples.slice(0, 3),
+                optimize: true
+            }
+        );
+
+        return res.data.rating;
+
+    } catch (error: any) {
+        if (error.response) {
+            throw new Error(`Qwen server error: ${error.response.status}`);
+        } else {
+            throw new Error("Network error or server not reachable");
+        }
+    }
 }
 
 // Groq LLM
